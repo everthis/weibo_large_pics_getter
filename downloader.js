@@ -80,7 +80,7 @@ var download_file_wget = function(file_url) {
             throw err;
         } else {
             console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
-            // startDownload();
+            startDownload();
         }
     });
 };
@@ -110,11 +110,17 @@ function makeDir() {
     });
 };
 
+function multiProcess(num) {
+    for (var i = 0; i < num; i++) {
+        download_file_wget(read_data_array[count]);
+        count += 1;
+    };
+}
 function startDownload() {
         if (count < read_data_array_len) {
             download_file_wget(read_data_array[count]);
             count += 1;
-            timer = setTimeout(startDownload, 300);
+            // timer = setTimeout(startDownload, 300);
         } else {
             console.log(count + "loop over!");
         };
@@ -140,7 +146,7 @@ function readTxt() {
         read_data_array = JSON.parse(data);
         read_data_array_len = read_data_array.length;
         console.log(read_data_array_len);
-        startDownload();
+        multiProcess(10);
     });
 }
 readTxt();
