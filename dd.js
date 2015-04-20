@@ -26,6 +26,7 @@ var count = 0;
 function downTimer() {
 	if (count < read_data_array_len) {
 		download(read_data_array[count], './hanyujia/' + count + '.jpg', ccb(count));
+
 		count += 1;
 		timer = setTimeout(downTimer, 50);
 	};
@@ -33,6 +34,7 @@ function downTimer() {
 
 
 fs.readFile("hanyujia.txt", 'utf8', function(err, data) {
+
   if (err) throw err;
   read_data_array = JSON.parse(data);
   read_data_array_len = read_data_array.length;
@@ -41,6 +43,9 @@ fs.readFile("hanyujia.txt", 'utf8', function(err, data) {
 });
 
 // setTimeout(function(){
+// /* 代码块... */
+// setTimeout(arguments.callee, 10);
+// }, 10);
 // /* 代码块... */
 // setTimeout(arguments.callee, 10);
 // }, 10);
