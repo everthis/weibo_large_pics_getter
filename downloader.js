@@ -138,6 +138,9 @@ function startDownload() {
 function processData(data) {
     data = data.replace(/http/g, '"http');
     data = data.replace(/\.jpg/g, '.jpg"');
+    data = data.replace(/\.gif/g, '.gif"');
+    data = data.replace(/\.jpeg/g, '.jpeg"');
+    data = data.replace(/\.png/g, '.png"');
     return data;
 }
 
