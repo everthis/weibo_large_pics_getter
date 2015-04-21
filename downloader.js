@@ -6,13 +6,16 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
 // App variables
+var filename = 'zhangyuxi.txt';
 var file_url = '';
-var DOWNLOAD_DIR = 'hanyujia';
+var DOWNLOAD_DIR = '';
 
 var read_data_array;
 var read_data_array_len;
 var count = 0;
 var timer;
+var isLoopOver = false;
+var processNumber = 10;
 
 // Function to download file using HTTP.get
 var download_file_httpget = function(file_url) {
@@ -72,15 +75,20 @@ var download_file_wget = function(file_url) {
     // extract the file name
     var file_name = url.parse(file_url).pathname.split('/').pop();
     // compose the wget command
-    var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url;
+    // The '-nc, --no-clobber' option isn't the best solution as newer files will not be downloaded. One should use '-N' instead which will download and overwrite the file only if the server has a newer version
+    var wget = 'wget -nc "' + file_url + '" -O "./' + DOWNLOAD_DIR + '/' + file_name + '"';
     // excute wget using child_process' exec function
-
     var child = exec(wget, function(err, stdout, stderr) {
         if (err) {
-            throw err;
+        	if (err.toString().indexOf('already') >= 0) {
+	            console.log('already exists!'); 
+		        startDownload();
+        	} else{
+	            download_file_wget(file_url);
+        	};
         } else {
             console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
-            startDownload();
+	        startDownload();
         }
     });
 };
@@ -121,15 +129,11 @@ function startDownload() {
             download_file_wget(read_data_array[count]);
             count += 1;
             // timer = setTimeout(startDownload, 300);
-        } else {
+        } else{
             console.log(count + "loop over!");
         };
     }
-    // function startDownload() {
-    //     for (var i = 0; i < read_data_array_len; i++) {
-    //         download_file_wget(read_data_array[i]);
-    //     };
-    // }
+
 
 function processData(data) {
     data = data.replace(/http/g, '"http');
@@ -138,15 +142,17 @@ function processData(data) {
 }
 
 function readTxt() {
-    fs.readFile("hanyujia.txt", 'utf8', function(err, data) {
+    fs.readFile(filename, 'utf8', function(err, data) {
         if (err) throw err;
         if (data.indexOf('http') === 1) {
             data = processData(data);
         };
+        DOWNLOAD_DIR = filename.slice(0, filename.lastIndexOf('.txt'));
+        makeDir();
         read_data_array = JSON.parse(data);
         read_data_array_len = read_data_array.length;
         console.log(read_data_array_len);
-        multiProcess(10);
+        multiProcess(processNumber);
     });
 }
 readTxt();
