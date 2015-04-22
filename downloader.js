@@ -35,8 +35,6 @@ var download_file_httpget = function(file_url) {
     });
 };
 
-
-
 // Function to download file using curl
 var download_file_curl = function(file_url) {
 
@@ -63,9 +61,6 @@ var download_file_curl = function(file_url) {
     });
 };
 
-
-
-
 // Function to download file using wget
 var download_file_wget = function(file_url) {
 
@@ -77,7 +72,9 @@ var download_file_wget = function(file_url) {
 
     var child = exec(wget, function(err, stdout, stderr) {
         if (err) {
-            throw err;
+            console.log(file_name + 'downloading interrupted, retrying...');
+            download_file_wget(file_url);
+            // throw err;
         } else {
             console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
             startDownload();
@@ -116,20 +113,16 @@ function multiProcess(num) {
         count += 1;
     };
 }
+
 function startDownload() {
-        if (count < read_data_array_len) {
-            download_file_wget(read_data_array[count]);
-            count += 1;
-            // timer = setTimeout(startDownload, 300);
-        } else {
-            console.log(count + "loop over!");
-        };
-    }
-    // function startDownload() {
-    //     for (var i = 0; i < read_data_array_len; i++) {
-    //         download_file_wget(read_data_array[i]);
-    //     };
-    // }
+    if (count < read_data_array_len) {
+        download_file_wget(read_data_array[count]);
+        count += 1;
+    } else {
+        console.log(count + "loop over!");
+    };
+}
+
 
 function processData(data) {
     data = data.replace(/http/g, '"http');
