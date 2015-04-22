@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
 // App variables
-var filename = 'zhangyuxi.txt';
+var filename = 'wwwap.txt';
 var file_url = '';
 var DOWNLOAD_DIR = '';
 
@@ -77,7 +77,7 @@ var download_file_wget = function(file_url) {
     var child = exec(wget, function(err, stdout, stderr) {
         if (err) {
             if (err.toString().indexOf('already') >= 0) {
-                console.log(count + ' already exists!');
+                console.log(count + ' ' + file_name + ' already exists!');
                 startDownload();
             } else{
                 console.log(file_name + ' downloading interrupted, retrying...');
@@ -117,8 +117,8 @@ function makeDir() {
 
 function multiProcess(num) {
     for (var i = 0; i < num; i++) {
-        download_file_wget(read_data_array[count]);
         count += 1;
+        download_file_wget(read_data_array[count]);
     };
 }
 
