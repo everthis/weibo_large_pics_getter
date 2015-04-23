@@ -174,8 +174,10 @@ function getAlbumPhotos(album_id) {
 // 头像相册 type=18
 // 微博配图 type=3
 // 默认专辑 type=24
-// count max 100, or [] is returned.!!!!
+// get_all API's max count is 100, or [] is returned.!!!!
+// get_photo_ids API without count get the first 2000 once and only.
 // http://photo.weibo.com/photos/get_all?uid=1823136207&album_id=3556886684034126&count=2000&page=1&type=3
 // http://photo.weibo.com/photos/get_all?uid=1823136207&album_id=3556886684034126&count=30&page=1&type=3&__rnd=1429780718807
+// http://photo.weibo.com/photos/get_photo_ids?uid=1823136207&album_id=0&type=3&__rnd=1429781325373
 // get_photo_ids();
 getAllAlbums(user_id);
