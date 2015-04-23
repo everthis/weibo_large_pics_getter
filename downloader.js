@@ -7,6 +7,7 @@ var spawn = require('child_process').spawn;
 
 // App variables
 var filename = 'wangrenqiuzi.txt';
+
 var file_url = '';
 var DOWNLOAD_DIR = '';
 
@@ -15,6 +16,7 @@ var read_data_array_len;
 var count = 0;
 var timer;
 var isLoopOver = false;
+var endedProcess = 0;
 var processNumber = 10;
 
 // Function to download file using HTTP.get
@@ -37,8 +39,6 @@ var download_file_httpget = function(file_url) {
         });
     });
 };
-
-
 
 // Function to download file using curl
 var download_file_curl = function(file_url) {
@@ -66,9 +66,6 @@ var download_file_curl = function(file_url) {
     });
 };
 
-
-
-
 // Function to download file using wget
 var download_file_wget = function(file_url) {
 
@@ -80,10 +77,11 @@ var download_file_wget = function(file_url) {
     // excute wget using child_process' exec function
     var child = exec(wget, function(err, stdout, stderr) {
         if (err) {
-        	if (err.toString().indexOf('already') >= 0) {
-	            console.log('already exists!'); 
-		        startDownload();
-        	} else{
+            if (err.toString().indexOf('already') >= 0) {
+                console.log(count + ' ' + file_name + ' already exists!');
+                startDownload();
+            } else{
+                console.log(file_name + ' downloading interrupted, retrying...');
 	            download_file_wget(file_url);
         	};
         } else {
@@ -120,24 +118,26 @@ function makeDir() {
 
 function multiProcess(num) {
     for (var i = 0; i < num; i++) {
-        download_file_wget(read_data_array[count]);
         count += 1;
+        download_file_wget(read_data_array[count]);
     };
 }
-function startDownload() {
-        if (count < read_data_array_len) {
-            download_file_wget(read_data_array[count]);
-            count += 1;
-            // timer = setTimeout(startDownload, 300);
-        } else{
-            console.log(count + "loop over!");
-        };
-    }
 
+function startDownload() {
+    if (count < read_data_array_len) {
+        download_file_wget(read_data_array[count]);
+        count += 1;
+    } else {
+        endedProcess += 1;
+        if (endedProcess === processNumber) {
+            console.log(count + " loop over!");
+        };
+    };
+}
 
 function processData(data) {
     data = data.replace(/http/g, '"http');
-    data = data.replace(/，/g, '，"');
+    data = data.replace(/,/g, '",');
     return data;
 }
 
