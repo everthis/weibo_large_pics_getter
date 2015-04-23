@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
 // App variables
-var filename = 'zhangyuxi.txt';
+var filename = 'wangrenqiuzi.txt';
 var file_url = '';
 var DOWNLOAD_DIR = '';
 
@@ -137,10 +137,7 @@ function startDownload() {
 
 function processData(data) {
     data = data.replace(/http/g, '"http');
-    data = data.replace(/\.jpg/g, '.jpg"');
-    data = data.replace(/\.gif/g, '.gif"');
-    data = data.replace(/\.jpeg/g, '.jpeg"');
-    data = data.replace(/\.png/g, '.png"');
+    data = data.replace(/，/g, '，"');
     return data;
 }
 
