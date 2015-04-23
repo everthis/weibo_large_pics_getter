@@ -4,7 +4,7 @@ document.body.innerHTML = "<p id='photos_length'></p><div id='img_urls' style='w
 var _photos_length = document.getElementById('photos_length');
 var _img_urls = document.getElementById('img_urls');
 
-var user_id = 1876510327;
+var user_id = 1823136207;
 var album_id_list = {};
 var _album_len = 0;
 var loopedAlbumQuantity = 0;
@@ -118,7 +118,14 @@ function getAllAlbums(user_id) {
 
              _album_len = _data.album_list.length;
             for (var i = 0; i < _album_len; i++) {
-                album_id_list[_album_list[i].album_id] = _album_list[i].count.photos;
+                if (_album_list[i].count.photos > 0) {
+                    var node = {
+                        "photos_count": _album_list[i].count.photos,
+                        "album_type": _album_list[i].type
+                    };
+                    album_id_list[_album_list[i].album_id] = node;
+                };
+
             };
             loopAlbums();
         } else {
@@ -132,8 +139,10 @@ function getAllAlbums(user_id) {
 }
 function getAlbumPhotos(album_id) {
     var request = new XMLHttpRequest();
-    var count = album_id_list[album_id];
-    request.open("GET", "http://photo.weibo.com/photos/get_all?uid=" + user_id + "&album_id=" + album_id + "&count=" + count + "&page=1&type=3&__rnd=" + (new Date).valueOf(), true);
+    var per_album = album_id_list[album_id];
+    var count = per_album.photos_count;
+    var type = per_album.album_type;
+    request.open("GET", "http://photo.weibo.com/photos/get_all?uid=" + user_id + "&album_id=" + album_id + "&count=" + count + "&page=1&type=" + type + "&__rnd=" + (new Date).valueOf(), true);
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
             // Success!
@@ -161,5 +170,12 @@ function getAlbumPhotos(album_id) {
     request.send();
 }
 
+// 面孔专辑 type=45
+// 头像相册 type=18
+// 微博配图 type=3
+// 默认专辑 type=24
+// count max 100, or [] is returned.!!!!
+// http://photo.weibo.com/photos/get_all?uid=1823136207&album_id=3556886684034126&count=2000&page=1&type=3
+// http://photo.weibo.com/photos/get_all?uid=1823136207&album_id=3556886684034126&count=30&page=1&type=3&__rnd=1429780718807
 // get_photo_ids();
 getAllAlbums(user_id);
