@@ -9,6 +9,7 @@ var album_id_list = {};
 var _album_len = 0;
 var loopedAlbumQuantity = 0;
 var photo_ids = [];
+var first_packet_length = 0;
 var original_img_urls = [];
 
 var timer;
@@ -170,6 +171,30 @@ function getAlbumPhotos(album_id) {
     request.send();
 }
 
+
+function getAlmostFirstTwoThousandIDs(uid, album_id, type) {
+    var request = new XMLHttpRequest();
+    request.open("GET", "http://photo.weibo.com/photos/get_photo_ids?uid=" + uid + "&album_id=" + album_id + "&type=" + type + "&__rnd" + (new Date).valueOf(), true);
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            var data = JSON.parse(request.responseText).data;
+                photo_ids = data;
+                first_packet_length = data.length;
+        } else {
+        // We reached our target server, but it returned an error
+        }
+    };
+    request.onerror = function() {
+
+    };
+    request.send();
+}
+
+
+// wwwap:1876510327
+// super: 1750156860
+// album_id: 22642373
 // 面孔专辑 type=45
 // 头像相册 type=18
 // 微博配图 type=3
@@ -180,4 +205,4 @@ function getAlbumPhotos(album_id) {
 // http://photo.weibo.com/photos/get_all?uid=1823136207&album_id=3556886684034126&count=30&page=1&type=3&__rnd=1429780718807
 // http://photo.weibo.com/photos/get_photo_ids?uid=1823136207&album_id=0&type=3&__rnd=1429781325373
 // get_photo_ids();
-getAllAlbums(user_id);
+// getAllAlbums(user_id);
