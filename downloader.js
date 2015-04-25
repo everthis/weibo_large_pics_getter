@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
 // App variables
-var filename = 'wangrenqiuzi.txt';
+var filename = 'pali.txt';
 
 var file_url = '';
 var DOWNLOAD_DIR = '';
