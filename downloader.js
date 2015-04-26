@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
 // App variables
-var filename = 'pali.txt';
+var filename = 'liya.txt';
 
 var file_url = '';
 var DOWNLOAD_DIR = '';
@@ -140,6 +140,11 @@ function processData(data) {
     data = data.replace(/,/g, '",');
     return data;
 }
+function uniqueArray(arr) {
+	return arr.filter(function(elem, pos) {
+		    return arr.indexOf(elem) == pos;
+		});
+}
 
 function readTxt() {
     fs.readFile(filename, 'utf8', function(err, data) {
@@ -151,7 +156,10 @@ function readTxt() {
         makeDir();
         read_data_array = JSON.parse(data);
         read_data_array_len = read_data_array.length;
-        console.log(read_data_array_len);
+        console.log("Total: " + read_data_array_len + " URLs.");
+
+        var unique_array = uniqueArray(read_data_array);
+        console.log("Actually: " + unique_array.length + " unique URLs.");
         multiProcess(processNumber);
     });
 }
